@@ -1,4 +1,6 @@
 # Batteship
 
 
-npm install
+Install packages from package.json/dependencies
+
+	npm install
