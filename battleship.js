@@ -1,4 +1,6 @@
-class Board {
+
+// Export class Board. Can be invoked from a module built using battleship.js
+module.exports.Board = class Board {
  // 
     constructor(size=10) {
         // Define the grid as an array of arrays
@@ -53,11 +55,10 @@ class Board {
     }
 
   /* Other player fired on the given tile
-   * Returns true if there is a battle on this tile, False otherwise
+   * Returns true if there is a ship on this tile, False otherwise
    */
-    check_attack(x, y){
-        let f=0;
-        return false;
+    check_attack(row, col){
+        return this.grid[row][col] != null;
     }
   
     print_grid(){
@@ -70,12 +71,11 @@ class Board {
             console.log(print)
         }
     }
-
 }
 
 
 // Define a ship
-class Ship{
+module.exports.Ship = class Ship{
     constructor(name, size, orientation='H'){
         this.name = name;
         this.size = size;
@@ -94,10 +94,10 @@ class Ship{
 }
 
 
-var s1 = new Ship("B", 2, "V");
-var s2 = new Ship("A", 3, "H");
-var b = new Board(4);
-// s2.rotate();  
-b.add_ship(s1, 0, 0);
-b.add_ship(s2, 3, 0)
-b.print_grid();
+// var s1 = new Ship("B", 2, "V");
+// var s2 = new Ship("A", 3, "H");
+// var b = new Board(4);
+// // s2.rotate();  
+// b.add_ship(s1, 0, 0);
+// b.add_ship(s2, 3, 0);
+// b.print_grid();
