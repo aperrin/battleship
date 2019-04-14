@@ -4,11 +4,12 @@
   "description": "toto",
   "main": "app.js",
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "jest": "^24.7.1"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "amandine et yoann",
   "license": "AGPL-3.0"
