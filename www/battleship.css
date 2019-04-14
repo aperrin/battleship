@@ -1,0 +1,26 @@
+.commonRectangle {
+    height: 600px;
+    display: inline-block;
+}
+
+.grid {
+    background-color: #1d334a;
+    width: 600px;
+	margin: 15px;
+	border: solid 1px red;
+}
+
+#separation {
+    width: 30px ;
+    background-color: black;
+    border: hidden;
+}
+
+#chooseName {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background-color: red;
+    width: 1000px;
+    height: 500px;
+}
