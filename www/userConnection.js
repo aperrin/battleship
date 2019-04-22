@@ -1,3 +1,6 @@
+
+
+
 // Initialization of global variables
 
 var userName = null;
@@ -9,6 +12,10 @@ var userName = null;
 // Get button
 var button = document.getElementById("validation");
 
+/* When validation button is hit:
+if user entered a valid name (not empty nor only 
+spaces), get this username and close popup
+*/
 button.onclick = function () {
 	// Get text written by user
 	var text = document.getElementById("userName");
