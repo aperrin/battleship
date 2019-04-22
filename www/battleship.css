@@ -21,6 +21,9 @@
     left: 50%;
     transform: translate(-50%, 0);
     background-color: red;
-    width: 1000px;
-    height: 500px;
+    width: 500px;
+    height: 300px;
+    text-align: center;
+    margin: auto;
 }
+
