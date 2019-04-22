@@ -8,6 +8,12 @@ Install packages from package.json/dependencies
 	npm install
 ```
 
+## Start server
+
+server language = nodejs
+
+	node app.js
+
 
 ## Tests :
 
