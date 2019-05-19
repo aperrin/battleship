@@ -10,9 +10,11 @@ const app = express()
 // Define 'www' for my website root (/)
 app.use('/', express.static('www'));
 
-var s1 = new game.Ship("B", 2, "V");
 var b = new game.Board(10);
+var s1 = new game.Ship("B", 2, "V");
+var s2 = new game.Ship("toto", 3, "H");
 b.add_ship(s1, 2, 0);
+b.add_ship(s2, 6, 3);
 b.print_grid();
 
 // Req = objects containing requests
