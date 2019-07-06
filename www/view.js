@@ -25,7 +25,11 @@ class GridManipulator {
 		this.ctx = this.canvas.getContext("2d");
 		this.ctx.canvas.width = this.width;
 		this.ctx.canvas.height = this.height;
-		this.lineWidth = lineWidth
+		this.lineWidth = lineWidth;
+    // Listenner to log mouse coordinates when mouse moves on grid
+    let that = this;
+    var divPos = this.div.getBoundingClientRect();
+    this.div.onmousemove = (event) => {that.getPosition(event, divPos)};
 	}
 
   /*
@@ -39,6 +43,11 @@ class GridManipulator {
 		var nbCols = state[0].length;
 		var tileHeigth = Math.floor(this.height / nbLines);
 		var tileWidth = Math.floor(this.width / nbCols);
+
+    this.nbLines = nbLines;
+    this.nbCols = nbCols;
+    this.tileHeigth = tileHeigth;
+    this.tileWidth = tileWidth;
 
 		// Draw all lines and columns: 
 		for (let line=0;line<=nbLines;line++){
@@ -63,6 +72,24 @@ class GridManipulator {
         }
 	}
 
+  /*
+  Action when 'onmousemove' is detected:
+  When mouse moves on the grid, get its X and Y coordinates
+
+  @param {event} event - Event given by javascript when 'onmousemove' is detected
+  */
+  getPosition(event, divPos){
+    // Get X and Y position of mouse relative to the grid
+    var myX = event.clientX - divPos.left;
+    var myY = event.clientY - divPos.top;
+    console.log("x = " + myX + "; y=" + myY);
+    
+    // Convert X,Y coordinates to col/row values
+    var tileCol = Math.floor(myX/this.tileWidth);
+    var tileRow = Math.floor(myY/this.tileHeigth);
+    console.log("tile: col=" + tileCol + " row=" + tileRow);    
+  }
+
 
 };
 
@@ -76,6 +103,3 @@ $.get("/getstate", function (data) {
 	var state = eval(data);
 	opGrid.update_state(state);
 });
-
-
-
