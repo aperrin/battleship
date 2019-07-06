@@ -1,6 +1,15 @@
 // Fonctions to display elements on screen (grid etc.)
 
+/** Create and update a grid (draw lines and ships)
+*/
 class GridManipulator {
+  /*
+  Create and format (size) canvas where the grid will be drawn, 
+  as well as the corresponding context object.
+
+  @param {div} div - div into which grid must be drawn
+  @param {number} lineWidth - width of drawn lines of the grid
+  */
 	constructor(div, lineWidth=2){
 		this.div = div;
 		// Create canvas object where all graphical elements will be drawn (container)
@@ -19,6 +28,11 @@ class GridManipulator {
 		this.lineWidth = lineWidth
 	}
 
+  /*
+  Update current state of the grid (number of lines/columns; ships)
+
+  @param {obj} state - grid state (eval from json formatted state sent by server)
+  */
 	update_state(state){
 		this.ctx.fillStyle = "red";
 		var nbLines = state.length;
@@ -30,11 +44,9 @@ class GridManipulator {
 		for (let line=0;line<=nbLines;line++){
 			this.ctx.fillRect(0, line * tileWidth - this.lineWidth/2, this.width, this.lineWidth);
 		}
-
 		for (let col=0;col<=nbCols;col++){
 			this.ctx.fillRect(col * tileHeigth - this.lineWidth/2, 0, this.lineWidth, this.height);
 		}
-
             		
 		// Draw ships
 		this.ctx.fillStyle = "white";
@@ -46,19 +58,9 @@ class GridManipulator {
             	let tile = state[row][col];
             	if (tile != null){
             		this.ctx.fillText(tile.name, col*tileHeigth + tileHeigth/2, row*tileWidth + tileWidth/2);
-            		// this.ctx.fillText(tile.name, row*tileWidth**2/2, col*tileHeigth**2/2);
             	}
             }
         }
-
-
-		// // for each row, col draw vertical (down) and horizontal (right) *
-		// // line from these coordinates
-
-  //       // 2 lines are missing, as we draw vertical down and horizontal right for each row, 
-  //       // line: down line and right line
-		// this.ctx.fillRect(0, this.height-2, this.width ,2)
-		// this.ctx.fillRect(this.width-2, 0, 2 ,this.height)
 	}
 
 
