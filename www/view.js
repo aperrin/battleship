@@ -26,35 +26,59 @@ class GridManipulator {
 		this.ctx.canvas.width = this.width;
 		this.ctx.canvas.height = this.height;
 		this.lineWidth = lineWidth;
+    // Tile dimenions
+    this.tileWidth = undefined;
+    this.tileHeigth = undefined;
+    // Coordinates of the tile over which the mouse currently is. Undefined if out of the grid.
+    this.mouseCol = undefined; 
+    this.mouseRow = undefined;
+    // Current state of game
+    this.state = undefined;
     // Listenner to log mouse coordinates when mouse moves on grid
     let that = this;
     var divPos = this.div.getBoundingClientRect();
-    this.div.onmousemove = (event) => {that.getPosition(event, divPos)};
+    this.div.onmousemove = (event) => {that.set_position(event, divPos)};
 	}
+
+  set_grid_state(state){
+    if (state != this.state) {
+      this.state = state;
+      this.nbRows = state.length;
+      this.nbCols = state[0].length;
+      this.tileHeigth = Math.floor(this.height / this.nbRows);
+      this.tileWidth = Math.floor(this.width / this.nbCols);
+      this.draw(state);
+      console.log("draw from state");
+    }
+
+  }
 
   /*
   Update current state of the grid (number of lines/columns; ships)
 
   @param {obj} state - grid state (eval from json formatted state sent by server)
   */
-	update_state(state){
+	draw(state){
+    // Draw background
+    this.ctx.fillStyle = "blue";
+    this.ctx.fillRect(0, 0, this.width, this.height);
+
+    // Draw current highlighted tile in another color
+    // fillRect(x_upleft, y_upleft, width, height)
+    this.ctx.fillStyle = "white";
+    var col_upleft = this.mouseCol * this.tileHeigth;
+    var row_upleft = this.mouseRow * this.tileWidth;
+    this.ctx.fillRect(col_upleft, row_upleft, this.tileWidth, this.tileHeigth);
+    console.log("tile rect: col=" + col_upleft + " row=" + row_upleft);
+
+
+		// Draw all lines and columns on the grid (here in red): 
 		this.ctx.fillStyle = "red";
-		var nbLines = state.length;
-		var nbCols = state[0].length;
-		var tileHeigth = Math.floor(this.height / nbLines);
-		var tileWidth = Math.floor(this.width / nbCols);
-
-    this.nbLines = nbLines;
-    this.nbCols = nbCols;
-    this.tileHeigth = tileHeigth;
-    this.tileWidth = tileWidth;
-
-		// Draw all lines and columns: 
-		for (let line=0;line<=nbLines;line++){
-			this.ctx.fillRect(0, line * tileWidth - this.lineWidth/2, this.width, this.lineWidth);
+		for (let line=0;line<=this.nbRows;line++){
+			this.ctx.fillRect(0, line * this.tileWidth - this.lineWidth/2, this.width, this.lineWidth);
 		}
-		for (let col=0;col<=nbCols;col++){
-			this.ctx.fillRect(col * tileHeigth - this.lineWidth/2, 0, this.lineWidth, this.height);
+		for (let col=0;col<=this.nbCols;col++){
+			this.ctx.fillRect(col * this.tileHeigth - this.lineWidth/2, 0, this.lineWidth, this.height);
 		}
             		
 		// Draw ships
@@ -62,11 +86,11 @@ class GridManipulator {
         this.ctx.textAlign = "center";
         this.ctx.textBaseline = "middle";
         this.ctx.font='20px Arial';
-		for (let row=0 ; row<nbLines ; row++) {
-            for (let col=0 ; col<nbCols ; col++) {
+		for (let row=0 ; row<this.nbRows ; row++) {
+            for (let col=0 ; col<this.nbCols ; col++) {
             	let tile = state[row][col];
             	if (tile != null){
-            		this.ctx.fillText(tile.name, col*tileHeigth + tileHeigth/2, row*tileWidth + tileWidth/2);
+            		this.ctx.fillText(tile.name, col*this.tileHeigth + this.tileHeigth/2, row*this.tileWidth + this.tileWidth/2);
             	}
             }
         }
@@ -74,23 +98,27 @@ class GridManipulator {
 
   /*
   Action when 'onmousemove' is detected:
-  When mouse moves on the grid, get its X and Y coordinates
+  Get current position of mouse, convert it to row/col position in the grid, and set those new values (if changed). If they changed, call draw to update the view
 
-  @param {event} event - Event given by javascript when 'onmousemove' is detected
+  @param {event} event - Event given by javascript when 'onmousemove' is detected. Gives (x,y) position of the mouse on the screen.
+  @param {div.getBoundingClientRect()} divPos - Position of div object on the screen.
   */
-  getPosition(event, divPos){
+  set_position(event, divPos){
     // Get X and Y position of mouse relative to the grid
     var myX = event.clientX - divPos.left;
     var myY = event.clientY - divPos.top;
-    console.log("x = " + myX + "; y=" + myY);
+    // console.log("x = " + myX + "; y=" + myY);
     
     // Convert X,Y coordinates to col/row values
-    var tileCol = Math.floor(myX/this.tileWidth);
-    var tileRow = Math.floor(myY/this.tileHeigth);
-    console.log("tile: col=" + tileCol + " row=" + tileRow);    
+    var mouseCol = Math.floor(myX/this.tileWidth);
+    var mouseRow = Math.floor(myY/this.tileHeigth); 
+    if (mouseCol != this.mouseCol || mouseRow != this.mouseRow) {
+      this.mouseCol = mouseCol;
+      this.mouseRow = mouseRow;
+      this.draw(this.state);
+      console.log("Draw from mouse position")
+    }
   }
-
-
 };
 
 var opGrid = document.getElementById("opponentGrid");
@@ -101,5 +129,6 @@ opGrid = new GridManipulator(opGrid, 2);
 $.get("/getstate", function (data) {
 	// Convert data (string) to js object
 	var state = eval(data);
-	opGrid.update_state(state);
+  opGrid.set_grid_state(state);
+	// opGrid.draw(state);
 });
